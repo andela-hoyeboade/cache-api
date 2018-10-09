@@ -1,0 +1,19 @@
+{
+  "name": "cache-api",
+  "version": "1.0.0",
+  "description": "A REST API that exposes methods to interact with a cache",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andela-hoyeboade/cache-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andela-hoyeboade/cache-api/issues"
+  },
+  "homepage": "https://github.com/andela-hoyeboade/cache-api#readme"
+}
