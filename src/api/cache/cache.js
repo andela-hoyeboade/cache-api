@@ -4,7 +4,6 @@ import { cacheModel } from '../../models';
 
 
 const TTL = 3600000; // 3600000 milliseconds i.e 1 hour
-const MAX_CACHE_ITEMS = 10;
 
 export default class Cache {
     constructor() {
@@ -12,9 +11,20 @@ export default class Cache {
 
     get(key) {
         /**
-        Returns the cached data for a given key
+        Returns the cached data for a given key. Create cached data if key is not found
          */
-        return cacheModel.findOne({key: key}).select('data -_id')
+        return new Promise(function(resolve, reject) {
+            cacheModel.findOrCreate({key: key}, {key: key, data: faker.lorem.sentence()})
+                .then((result) => {
+                    if (result.created) {
+                        console.log('Cache miss');
+                    } else {
+                        console.log('Cache hit');
+                    }
+                    resolve({key: result.doc.key, data: result.doc.data})
+                })
+                .catch(err => reject(err))
+        });
     }
 
     set(key) {
@@ -22,7 +32,7 @@ export default class Cache {
         Creates or updates the data for a given key
          */
         return cacheModel.findOneAndUpdate({key: key}, {data: faker.lorem.sentence()},
-            {upsert: true, new: true, runValidators: true, fields: { key:1, data: 1, _id: 0 }})
+            {upsert: true, new: true, runValidators: true, fields: { key:1, data: 1, _id: 0 }});
     }
 
     delete(key) {
