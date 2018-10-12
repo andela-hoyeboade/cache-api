@@ -62,3 +62,6 @@ typings/
 
 # Text editors
 .idea/
+
+# Builds
+dist/

@@ -4,7 +4,12 @@
   "description": "A REST API that exposes methods to interact with a cache",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src -d dist",
+    "build:watch": "babel src -d dist --watch",
+    "start": "node dist/app.js",
+    "start:app:dev": "nodemon dist/app.js",
+    "start:dev": "run-p build:watch start:app:dev"
   },
   "repository": {
     "type": "git",
@@ -15,5 +20,17 @@
   "bugs": {
     "url": "https://github.com/andela-hoyeboade/cache-api/issues"
   },
-  "homepage": "https://github.com/andela-hoyeboade/cache-api#readme"
+  "homepage": "https://github.com/andela-hoyeboade/cache-api#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "mongoose": "^5.3.2",
+    "morgan": "^1.9.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-watch": "^2.0.7",
+    "npm-run-all": "^4.1.3"
+  }
 }
