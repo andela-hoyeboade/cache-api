@@ -11,3 +11,6 @@ A REST API that exposes methods to interact with a cache
 ###### Run the following command
  - `npm install`
  - `npm start` or `npm run start:dev` for development mode
+
+#### Using the API
+- Visit [http://localhost:5000/api/](http://localhost:5000/api/) to see list of available routes
