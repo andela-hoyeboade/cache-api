@@ -19,7 +19,7 @@ export default class Cache {
                     } else {
                         console.log('Cache hit');
                     }
-                    resolve({key: result.doc.key, data: result.doc.data})
+                    resolve({key: result.doc.key, data: result.doc.data, timeToLive: result.doc.timeToLive})
                 })
                 .catch(err => reject(err))
         });

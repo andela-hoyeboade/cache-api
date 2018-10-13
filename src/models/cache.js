@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import findOrCreate from 'mongoose-findorcreate';
+import faker from 'faker';
 
 const MAX_CACHE_ITEMS = 10;
 const TIME_TO_LIVE = 3600000; // 3600000 milliseconds i.e 1 hour
@@ -20,6 +21,10 @@ const CacheSchema = new Schema({
     expiresAt: {type: Date, default: getCacheExpireTime}
 }, {timestamps: {}});
 CacheSchema.plugin(findOrCreate);
+
+CacheSchema.virtual('timeToLive').get(function () {
+  return `${this.expiresAt - Date.now()} milliseconds`
+});
 
 const overwriteOldRecords = (next) => {
     /**
@@ -45,18 +50,6 @@ const overwriteOldRecords = (next) => {
     }).catch((err) => next(err));
 };
 
-const updateCacheExpireTime = (doc, next) => {
-    /**
-     * update cache ( doc ) expire time after a successful retrieval
-     */
-    if (doc) {
-        doc.update({
-            $set: {expiresAt: getCacheExpireTime()}
-        }).then(() => next()).catch((err) => next(err));
-    }
-    next();
-};
-
 CacheSchema.pre('save', (next) => {
     overwriteOldRecords(next);
 });
@@ -65,13 +58,23 @@ CacheSchema.pre('findOneAndUpdate', (next) => {
     overwriteOldRecords(next);
 });
 
-CacheSchema.post(/^findOne/, (doc, next) => {
-    updateCacheExpireTime(doc, next);
-})
-
-CacheSchema.pre(/^findOne/, (next) => {
-    console.log(this);
-    next()
+CacheSchema.pre(/^findOne/, function (next) {
+    /**
+     * Update expire time, and if cached data is expired, update cached data with new random value
+     */
+    if (this.expiresAt <= Date.now()) {
+        this.model.updateOne(this.getQuery(), {data: faker.lorem.sentence(), expiresAt: getCacheExpireTime()})
+            .then(() => {
+                next()
+            })
+            .catch((err) => next(err));
+    } else {
+        this.model.updateOne(this.getQuery(), {expiresAt: getCacheExpireTime()})
+            .then(() => {
+                next()
+            })
+            .catch((err) => next(err));
+    }
 });
 
 const cacheModel = mongoose.model('Cache', CacheSchema);
