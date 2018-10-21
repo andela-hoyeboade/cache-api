@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel src -d dist",
     "build:watch": "babel src -d dist --watch",
-    "start": "node dist/app.js",
+    "start": "npm run build && node dist/app.js",
     "start:app:dev": "nodemon dist/app.js",
     "start:dev": "run-p build:watch start:app:dev"
   },
